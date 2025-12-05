@@ -1,0 +1,7 @@
+{
+  "name": "English Practice Tutor",
+  "description": "Una aplicación interactiva para practicar inglés conversacional con una IA. Ofrece transcripción en tiempo real y retroalimentación de audio para mejorar tu pronunciación y fluidez.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
