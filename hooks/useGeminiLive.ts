@@ -3,7 +3,6 @@ import { GoogleGenAI, LiveServerMessage, Modality } from '@google/genai';
 import { ConnectionState, ChatMessage } from '../types';
 import { decodeBase64, pcmToAudioBuffer, float32ToPCM16 } from '../utils/audioUtils';
 
-const API_KEY = process.env.API_KEY || '';
 const MODEL_NAME = 'gemini-2.5-flash-native-audio-preview-09-2025';
 
 // System instruction for English Tutor
@@ -18,6 +17,22 @@ export const useGeminiLive = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [volume, setVolume] = useState<number>(0);
   const [isMicOn, setIsMicOn] = useState<boolean>(true);
+  const [apiKey, setApiKey] = useState<string>(() => {
+    const envKey = (import.meta as any).env?.VITE_API_KEY as string | undefined;
+
+    if (envKey) return envKey;
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('genai_api_key') ?? '';
+    }
+
+    return '';
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('genai_api_key', apiKey);
+    }
+  }, [apiKey]);
 
   // Audio Contexts
   const inputContextRef = useRef<AudioContext | null>(null);
@@ -69,8 +84,8 @@ export const useGeminiLive = () => {
   }, []);
 
   const connect = useCallback(async () => {
-    if (!API_KEY) {
-      alert("API Key not found in environment variables.");
+    if (!apiKey) {
+      alert('Please provide a valid Gemini API Key to start the session.');
       return;
     }
 
@@ -86,7 +101,7 @@ export const useGeminiLive = () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
-      const ai = new GoogleGenAI({ apiKey: API_KEY });
+      const ai = new GoogleGenAI({ apiKey });
 
       // Connect to Gemini Live
       sessionPromiseRef.current = ai.live.connect({
@@ -221,7 +236,7 @@ export const useGeminiLive = () => {
       console.error("Connection failed", e);
       setConnectionState(ConnectionState.ERROR);
     }
-  }, [API_KEY, isMicOn]);
+  }, [apiKey, isMicOn]);
 
   // Helper to update the "pending" message in the UI list
   const updateStreamingMessage = (role: 'user' | 'model', text: string) => {
@@ -295,6 +310,8 @@ export const useGeminiLive = () => {
     messages,
     volume,
     isMicOn,
-    toggleMic
+    toggleMic,
+    apiKey,
+    setApiKey
   };
 };

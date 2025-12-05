@@ -6,14 +6,16 @@ import { ChatList } from './components/ChatList';
 import { Mic, MicOff, Phone, PhoneOff, Settings2 } from 'lucide-react';
 
 const App: React.FC = () => {
-  const { 
-    connectionState, 
-    connect, 
-    disconnect, 
-    messages, 
-    volume, 
-    isMicOn, 
-    toggleMic 
+  const {
+    connectionState,
+    connect,
+    disconnect,
+    messages,
+    volume,
+    isMicOn,
+    toggleMic,
+    apiKey,
+    setApiKey
   } = useGeminiLive();
 
   const isConnected = connectionState === ConnectionState.CONNECTED;
@@ -36,6 +38,21 @@ const App: React.FC = () => {
                 {connectionState === ConnectionState.CONNECTED ? 'Live' : 'Offline'}
               </span>
             </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 bg-slate-800/60 px-4 py-2 rounded-xl border border-slate-700/60 shadow-inner">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="api-key" className="text-xs uppercase text-slate-400 tracking-wide">Gemini API Key</label>
+            <input
+              id="api-key"
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder="Pega tu clave de Google AI Studio"
+              className="w-64 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <span className="text-[11px] text-slate-500">Guardamos la clave solo en tu navegador.</span>
           </div>
         </div>
       </header>
@@ -94,7 +111,7 @@ const App: React.FC = () => {
             {!isConnected ? (
               <button
                 onClick={connect}
-                disabled={isConnecting}
+                disabled={isConnecting || !apiKey}
                 className="flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(79,70,229,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isConnecting ? (
