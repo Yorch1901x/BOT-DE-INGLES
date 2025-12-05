@@ -49,7 +49,7 @@ export function pcmToAudioBuffer(
 
 /**
  * Converts Float32 audio data (from microphone) to Int16 PCM base64 string.
- * This is required format for Gemini Live API input.
+ * Useful when sending microphone PCM payloads to speech APIs.
  */
 export function float32ToPCM16(float32Data: Float32Array): { base64: string; blob: Blob } {
   const l = float32Data.length;

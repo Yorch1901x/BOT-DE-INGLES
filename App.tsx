@@ -1,5 +1,5 @@
 import React from 'react';
-import { useGeminiLive } from './hooks/useGeminiLive';
+import { useGptTutor } from './hooks/useGptTutor';
 import { ConnectionState } from './types';
 import { AudioVisualizer } from './components/AudioVisualizer';
 import { ChatList } from './components/ChatList';
@@ -16,7 +16,7 @@ const App: React.FC = () => {
     toggleMic,
     apiKey,
     setApiKey
-  } = useGeminiLive();
+  } = useGptTutor();
 
   const isConnected = connectionState === ConnectionState.CONNECTED;
   const isConnecting = connectionState === ConnectionState.CONNECTING;
@@ -43,13 +43,13 @@ const App: React.FC = () => {
 
         <div className="flex items-center gap-3 bg-slate-800/60 px-4 py-2 rounded-xl border border-slate-700/60 shadow-inner">
           <div className="flex flex-col gap-1">
-            <label htmlFor="api-key" className="text-xs uppercase text-slate-400 tracking-wide">Gemini API Key</label>
+            <label htmlFor="api-key" className="text-xs uppercase text-slate-400 tracking-wide">OpenAI API Key</label>
             <input
               id="api-key"
               type="password"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="Pega tu clave de Google AI Studio"
+              placeholder="Ingresa tu clave de OpenAI"
               className="w-64 px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <span className="text-[11px] text-slate-500">Guardamos la clave solo en tu navegador.</span>
