@@ -18,9 +18,14 @@ export const useGeminiLive = () => {
   const [volume, setVolume] = useState<number>(0);
   const [isMicOn, setIsMicOn] = useState<boolean>(true);
   const [apiKey, setApiKey] = useState<string>(() => {
-    const envKey = (import.meta as any).env?.VITE_API_KEY as string | undefined;
+    const viteEnvKey = (import.meta as any).env?.VITE_API_KEY as string | undefined;
+    if (viteEnvKey) return viteEnvKey;
 
-    if (envKey) return envKey;
+    const processEnvKey = (typeof process !== 'undefined'
+      ? (process as any).env?.API_KEY
+      : undefined) as string | undefined;
+    if (processEnvKey) return processEnvKey;
+
     if (typeof window !== 'undefined') {
       return localStorage.getItem('genai_api_key') ?? '';
     }
